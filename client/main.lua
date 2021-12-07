@@ -24,9 +24,8 @@ function LockVehicle()
         QBCore.Functions.TriggerCallback('vehiclekeys:CheckHasKey', function(result)
             if result then
                 local vehLockStatus = GetVehicleDoorLockStatus(veh)
-                loadAnimDict("anim@mp_player_intmenu@key_fob@")
-                TaskPlayAnim(ped, 'anim@mp_player_intmenu@key_fob@', 'fob_click', 3.0, 3.0, -1, 49, 0, false, false,
-                    false)
+                loadAnimDict("anim@heists@keycard@")
+                TaskPlayAnim(ped, 'anim@heists@keycard@', 'exit', 24.0, 16.0, 1000, 50, 0, false, false, false)
 
                 if vehLockStatus == 1 then
                     Wait(750)
@@ -305,8 +304,13 @@ RegisterNetEvent('vehiclekeys:client:SetOwner', function(plate)
 end)
 
 RegisterNetEvent('vehiclekeys:client:GiveKeys', function(target)
-    local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
-    TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+    local vehicles = IsPedInAnyVehicle(PlayerPedId())
+    if vehicles then
+        local plate = QBCore.Functions.GetPlate(GetVehiclePedIsIn(PlayerPedId(), true))
+        TriggerServerEvent('vehiclekeys:server:GiveVehicleKeys', plate, target)
+    else
+        QBCore.Functions.Notify('you need to be in a vehicle to give key', 'error')
+    end
 end)
 
 RegisterNetEvent('vehiclekeys:client:ToggleEngine', function()
